@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Title</title>
+        
+        <!--<script src="js/less.min.js" type="text/javascript"></script>-->
+        <script>
+            //function name() {
+                //alert("Run!");
+                //var w = +document.getElementById('weight').value;
+                //var d = +document.getElementById('dose').value;
+                //document.getElementById('qes').value = 3;
+                //document.getElementById('qe').value = w * d;
+                //document.forms.calculator.submit();
+                
+            //}
+            //document.getElementById("alert-btn").addEventListener("click", name);
+        </script>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Renal Replacement Therapy Parameters</h1>
+        
+        
+        
+        <span class="param-name">Weight: </span>
+        <input type="number" id="weight" oninput="qe()" autofocus><br>
+        <span class="param-name">Dose: </span>
+        <input type="number" id="dose" value="25"><br>
+           
+        <span class="param-name" id="qe">Expected Qe = </span>
+        <!--<input type="text" id="qe" readonly>-->
+        
+        <!--<br><span class="qes">qes</span><br><br>-->
+        <!--<input type="button" onclick="name()" value="Calc Qe"><br>-->
+        <!--<input type="button" onclick="qe()" value="Alert me"><br>-->
+        <script>
+            function qe () {
+                var w = +document.getElementById('weight').value;
+                var d = +document.getElementById('dose').value;
+                document.getElementById('qe').innerHTML = 'Expected Qe = '+(w * d);
+                //document.getElementById('qes').innerHTML = w * d;
+            }
+        </script>
+    </body>
+</html>
