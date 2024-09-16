@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Title</title>
+        <title>ACT Reversal</title>
         
         <link rel="stylesheet" type="text/css" href="css/main.css" />
     </head>
@@ -16,7 +16,7 @@
             <input type="number" id="base-act" class="param-input" oninput="exp_prota()" autofocus>
         </div>
         <div class="flex-container">
-            <span class="param-name">Heparin bolus (mg)</span>
+            <span class="param-name">Heparin bolus (UI)</span>
             <input type="number" id="hep-bolus" class="param-input" oninput="exp_prota()">
         </div>
         <div class="flex-container">
@@ -41,7 +41,7 @@
                 var hep_bolus = +document.getElementById('hep-bolus').value;
                 var post_hep_act = +document.getElementById('post-hep-act').value;
                 var final_act = +document.getElementById('final-act').value;
-                var expected_prota = (final_act-base_act)/(post_hep_act-base_act)*hep_bolus;
+                var expected_prota = (final_act-base_act)/(post_hep_act-base_act)*(hep_bolus/100);
                 document.getElementById('prota').innerHTML = expected_prota.toFixed(0)+' mg';
             }
         </script>
