@@ -5,20 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
         <title>Title</title>
         
-        <!--<script src="js/less.min.js" type="text/javascript"></script>-->
-        <script>
-            //function name() {
-                //alert("Run!");
-                //var w = +document.getElementById('weight').value;
-                //var d = +document.getElementById('dose').value;
-                //document.getElementById('qes').value = 3;
-                //document.getElementById('qe').value = w * d;
-                //document.forms.calculator.submit();
-                
-            //}
-            //document.getElementById("alert-btn").addEventListener("click", name);
-        </script>
-        
         <link rel="stylesheet" type="text/css" href="css/main.css" />
     </head>
     <body>
@@ -26,11 +12,11 @@
         
         <!--Expected Qe-->
         <div class="flex-container">
-            <span class="param-name">Weight</span>
+            <span class="param-name">Weight (kg)</span>
             <input type="number" id="weight" class="param-input" oninput="exp_qe()" autofocus>
         </div>
         <div class="flex-container">
-            <span class="param-name">Dose</span>
+            <span class="param-name">Dose (ml/kg*h)</span>
             <input type="number" id="dose" class="param-input" oninput="exp_qe()" value="25">
         </div>
         <div class="flex-container">
@@ -42,28 +28,28 @@
         
         <!--Prescription-->
         <div class="flex-container">
-            <span class="param-name">Qpost</span>
+            <span class="param-name">Qpost (ml/h)</span>
             <input type="number" id="qpost" class="param-input" oninput="actual_qe(); filtration_fraction();" >
         </div>
         <div class="flex-container">
-            <span class="param-name">Qpre</span>
+            <span class="param-name">Qpre (ml/h)</span>
             <input type="number" id="qpre" class="param-input" oninput="actual_qe(); filtration_fraction();" value="0">
         </div>
         <div class="flex-container">
-            <span class="param-name">NUF</span>
+            <span class="param-name">NUF (ml/h)</span>
             <input type="number" id="nuf" class="param-input" oninput="actual_qe(); filtration_fraction();" value="100">
         </div>
         <div class="flex-container">
-            <span class="param-name">Qd</span>
+            <span class="param-name">Qd (ml/h)</span>
             <input type="number" id="qd" class="param-input" oninput="actual_qe(); dialysis_fraction();" >
         </div>
         <div class="flex-container">
-            <span class="param-name">Qb</span>
+            <span class="param-name">Qb (ml/min)</span>
             <input type="number" id="qb" class="param-input" oninput="dialysis_fraction(); filtration_fraction();" value="200">
         </div>
         <div class="flex-container">
-            <span class="param-name">Hct</span>
-            <input type="number" id="hct" class="param-input" oninput="filtration_fraction()" value="0.3">
+            <span class="param-name">Hct (%)</span>
+            <input type="number" id="hct" class="param-input" oninput="filtration_fraction()" value="30">
         </div>
         <div class="flex-container">
             <div class="flex-container flex-output">
@@ -87,7 +73,7 @@
                 var w = +document.getElementById('weight').value;
                 var d = +document.getElementById('dose').value;
                 var expected_qe = w * d;
-                document.getElementById('exp-qe').innerHTML = expected_qe;
+                document.getElementById('exp-qe').innerHTML = expected_qe+' ml/h';
             }
             
             function actual_qe () {
@@ -96,7 +82,7 @@
                 var nuf = +document.getElementById('nuf').value;
                 var qd = +document.getElementById('qd').value;
                 var actual_qe = qpre+qpost+nuf+qd;
-                document.getElementById('actual-qe').innerHTML = actual_qe;
+                document.getElementById('actual-qe').innerHTML = actual_qe+' ml/h';
             }
             
             function filtration_fraction () {
@@ -106,7 +92,7 @@
                 var qb = +document.getElementById('qb').value;
                 var hct = +document.getElementById('hct').value;
                 var quf = qpre+qpost+nuf;
-                var ff = ((quf/60)/(qb*(1-hct)+qpre/60))*100;
+                var ff = ((quf/60)/(qb*(1-(hct/100))+qpre/60))*100;
                 document.getElementById('ff').innerHTML = ff.toFixed(2)+'%';
             }
             
