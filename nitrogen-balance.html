@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>Nitrogen Balance</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Nitrogen Balance</h1>
+        
+        <div class="flex-container">
+            <span class="param-name">Protein Intake (g)</span>
+            <input type="number" id="intake" class="param-input" oninput="nb()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Urinary Urea (mg/dL)</span>
+            <input type="number" id="urea" class="param-input" oninput="nb()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Urinary Creatinine (mg/dL)</span>
+            <input type="number" id="creatinine" class="param-input" oninput="nb()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Urinary Volume (mL)</span>
+            <input type="number" id="volume" class="param-input" oninput="nb()">
+        </div>
+        <div class="flex-container">
+           <div class="flex-container flex-output">
+                <span class="param-output-name">NB</span>
+                <span class="param-output-value" id="nb">N/A</span>
+           </div>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function nb () {
+                var intake = document.getElementById('intake').value;
+                var urea = document.getElementById('urea').value;
+                var creatinine = document.getElementById('creatinine').value;
+                var volume = document.getElementById('volume').value;
+                var nb_calc = (intake/6.25) - (urea*28/60 + creatinine*42/113)*Math.pow(10, -5)*volume - 4;
+                document.getElementById('nb').innerHTML = nb_calc.toFixed(2)+' g';
+            }
+        </script>
+    </body>
+</html>
