@@ -1,0 +1,57 @@
+
+body
+{
+    margin:0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1
+{
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 8vw;
+}
+
+.flex-container
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1vw;
+    width: 100%;
+}
+
+.flex-output
+{
+    width: 25%;
+    margin: 1vw;
+    border-radius: 1vw;
+    background-color: navy;
+    color: white;
+}
+
+.param-name
+{
+    font-size: 3.6vw;
+    width: 40%; 
+}
+
+.param-input
+{
+    width: 50%;
+}
+
+.param-output-name
+{
+    width: 100%;
+    text-align: center;
+    font-size: 3vw;
+}
+
+.param-output-value
+{
+    width: 100%;
+    text-align: center;
+    font-size: 4vw;
+    font-weight: bold;
+}
