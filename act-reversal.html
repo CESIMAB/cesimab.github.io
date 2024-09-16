@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>Title</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>ACT Reversal</h1>
+        
+        <!--Expected Qe-->
+        <div class="flex-container">
+            <span class="param-name">Base ACT (s)</span>
+            <input type="number" id="base-act" class="param-input" oninput="exp_prota()" autofocus>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Heparin bolus (mg)</span>
+            <input type="number" id="hep-bolus" class="param-input" oninput="exp_prota()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Post Heparin ACT (s)</span>
+            <input type="number" id="post-hep-act" class="param-input" oninput="exp_prota()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Final ACT (s)</span>
+            <input type="number" id="final-act" class="param-input" oninput="exp_prota()">
+        </div>
+        <div class="flex-container">
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Protamine</span>
+                <span class="param-output-value" id="prota">N/A</span>
+           </div>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function exp_prota () {
+                var base_act = +document.getElementById('base-act').value;
+                var hep_bolus = +document.getElementById('hep-bolus').value;
+                var post_hep_act = +document.getElementById('post-hep-act').value;
+                var final_act = +document.getElementById('final-act').value;
+                var expected_prota = (final_act-base_act)/(post_hep_act-base_act)*hep_bolus;
+                document.getElementById('prota').innerHTML = expected_prota.toFixed(0)+' mg';
+            }
+        </script>
+    </body>
+</html>
