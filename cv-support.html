@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>ACT Reversal</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Cardiovascular Support Drugs</h1>
+        
+        <!--Expected Qe-->
+        <div class="flex-container">
+            <span class="param-name">Weight (kg)</span>
+            <input type="number" id="weight" class="param-input" oninput="na_dose(); db_dose();">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">NA Concentration</span>
+            <select name="na-concentration" id="na-concentration" class="param-input" oninput="na_dose()">
+                <option value="4/50">4mg/50ml</option>
+                <option value="8/50">8mg/50ml</option>
+                <option value="16/50">16mg/50ml</option>
+                <option value="32/50">32mg/50ml</option>
+            </select>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">NA Flow (ml/h)</span>
+            <input type="number" id="na-flow" class="param-input" oninput="na_dose()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">DB Flow (ml/h)</span>
+            <input type="number" id="db-flow" class="param-input" oninput="db_dose()">
+        </div>
+        <div class="flex-container">
+           <div class="flex-container flex-output">
+                <span class="param-output-name">NA dose</span>
+                <span class="param-output-value" id="na-dose">N/A</span>
+           </div>
+           <div class="flex-container flex-output">
+                <span class="param-output-name">DB dose</span>
+                <span class="param-output-value" id="db-dose">N/A</span>
+           </div>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function na_dose () {
+                var na_concentration = 0;
+                switch (document.getElementById('na-concentration').value) {
+                    case '4/50':
+                        na_concentration = 0.08;
+                        break;
+                    case '8/50':
+                        na_concentration = 0.16;
+                        break;
+                    case '16/50':
+                        na_concentration = 0.32;
+                        break;
+                    case '32/50':
+                        na_concentration = 0.64;
+                        break;
+                    default:
+                        na_concentration = 0.08;
+                }
+                var na_flow = +document.getElementById('na-flow').value;
+                var weight = +document.getElementById('weight').value;
+                var na_dose_calc = (na_flow*na_concentration)/(weight*60)*1000000;
+                document.getElementById('na-dose').innerHTML = na_dose_calc.toFixed(2)+' ng/kg*min';
+            }
+            function db_dose () {
+                var db_flow = +document.getElementById('db-flow').value;
+                var weight = +document.getElementById('weight').value;
+                var db_dose_calc = (db_flow*5)/(weight*60)*1000;
+                document.getElementById('db-dose').innerHTML = db_dose_calc.toFixed(2)+' mcg/kg*min';
+            }
+        </script>
+    </body>
+</html>
