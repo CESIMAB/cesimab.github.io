@@ -23,25 +23,64 @@
     <body>
         <h1>Renal Replacement Therapy Parameters</h1>
         
-        
-        
+        <!--Expected Qe-->
         <span class="param-name">Weight: </span>
-        <input type="number" id="weight" oninput="qe()" autofocus><br>
+        <input type="number" id="weight" oninput="exp_qe()" autofocus><br>
         <span class="param-name">Dose: </span>
-        <input type="number" id="dose" value="25"><br>
-           
-        <span class="param-name" id="qe">Expected Qe = </span>
-        <!--<input type="text" id="qe" readonly>-->
+        <input type="number" id="dose" oninput="exp_qe()" value="25"><br>
+        <span class="param-name" id="exp-qe">Expected Qe = </span><br>
         
-        <!--<br><span class="qes">qes</span><br><br>-->
-        <!--<input type="button" onclick="name()" value="Calc Qe"><br>-->
-        <!--<input type="button" onclick="qe()" value="Alert me"><br>-->
+        <!--Prescription-->
+        <span class="param-name">Qpost: </span>
+        <input type="number" id="qpost" oninput="actual_qe(); filtration_fraction();" ><br>
+        <span class="param-name">Qpre: </span>
+        <input type="number" id="qpre" oninput="actual_qe(); filtration_fraction();" value="0"><br>
+        <span class="param-name">NUF: </span>
+        <input type="number" id="nuf" oninput="actual_qe(); filtration_fraction();" value="100"><br>
+        <span class="param-name">Qd: </span>
+        <input type="number" id="qd" oninput="actual_qe(); dialysis_fraction();" ><br>
+        <span class="param-name">Qb: </span>
+        <input type="number" id="qb" oninput="dialysis_fraction(); filtration_fraction();" value="200"><br>
+        <span class="param-name">Hct: </span>
+        <input type="number" id="hct" oninput="filtration_fraction()" value="0.3"><br>
+        <span class="param-name" id="actual-qe">Actual Qe = </span><br>
+        <span class="param-name" id="ff">Filtration Fraction = </span><br>
+        <span class="param-name" id="df">Dialysis Fraction = </span><br>
+        
+        <!--Scripts-->
         <script>
-            function qe () {
+            function exp_qe () {
                 var w = +document.getElementById('weight').value;
                 var d = +document.getElementById('dose').value;
-                document.getElementById('qe').innerHTML = 'Expected Qe = '+(w * d);
-                //document.getElementById('qes').innerHTML = w * d;
+                var expected_qe = w * d;
+                document.getElementById('exp-qe').innerHTML = 'Expected Qe = '+expected_qe;
+            }
+            
+            function actual_qe () {
+                var qpre = +document.getElementById('qpre').value;
+                var qpost = +document.getElementById('qpost').value;
+                var nuf = +document.getElementById('nuf').value;
+                var qd = +document.getElementById('qd').value;
+                var actual_qe = qpre+qpost+nuf+qd;
+                document.getElementById('actual-qe').innerHTML = 'Actual Qe = '+actual_qe;
+            }
+            
+            function filtration_fraction () {
+                var qpre = +document.getElementById('qpre').value;
+                var qpost = +document.getElementById('qpost').value;
+                var nuf = +document.getElementById('nuf').value;
+                var qb = +document.getElementById('qb').value;
+                var hct = +document.getElementById('hct').value;
+                var quf = qpre+qpost+nuf;
+                var ff = ((quf/60)/(qb*(1-hct)+qpre/60))*100;
+                document.getElementById('ff').innerHTML = 'Filtration Fraction = '+ff.toFixed(2)+'%';
+            }
+            
+            function dialysis_fraction () {
+                var qd = +document.getElementById('qd').value;
+                var qb = +document.getElementById('qb').value;
+                var df = ((qd/60)/qb)*100;
+                document.getElementById('df').innerHTML = 'Dialysis Fraction = '+df.toFixed(2)+'%';
             }
         </script>
     </body>
