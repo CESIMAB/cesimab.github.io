@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>Nutritional Composition Calculator</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Nutritional Composition Calculator</h1>
+        
+        <div class="flex-container">
+            <span class="param-name">Weight (kg)</span>
+            <input type="number" id="weight" class="param-input" oninput="nutri_comp()">
+        </div>
+        <div class="flex-container section-header">
+            <h2>Fresubin Original</h2>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Flow (ml/h)</span>
+            <input type="number" id="fresubin-flow" class="param-input" oninput="nutri_comp()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Time (h)</span>
+            <input type="number" id="fresubin-time" class="param-input" oninput="nutri_comp()" value="24">
+        </div>
+        <div class="flex-container section-header">
+            <h2>Kabiven Peripheral</h2>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Flow (ml/h)</span>
+            <input type="number" id="kabiven-flow" class="param-input" oninput="nutri_comp()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Time (h)</span>
+            <input type="number" id="kabiven-time" class="param-input" oninput="nutri_comp()" value="24">
+        </div>
+        <div class="flex-container section-header">
+            <h2>NuTRIflex Lipid Peri</h2>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Flow (ml/h)</span>
+            <input type="number" id="nutriflex-flow" class="param-input" oninput="nutri_comp()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Time (h)</span>
+            <input type="number" id="nutriflex-time" class="param-input" oninput="nutri_comp()" value="24">
+        </div>
+        
+        <!--Outputs-->
+        <div class="flex-container">
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Energy</span>
+                <span class="param-output-value" id="energy">N/A</span>
+           </div>
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Protein</span>
+                <span class="param-output-value" id="protein">N/A</span>
+           </div>
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Carbohydrate</span>
+                <span class="param-output-value" id="carbs">N/A</span>
+           </div>
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Fat</span>
+                <span class="param-output-value" id="fat">N/A</span>
+           </div>
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Water</span>
+                <span class="param-output-value" id="water">N/A</span>
+           </div>
+        </div>
+        
+        <!--Other Info-->
+        <hr/>
+        <div class="flex-container">
+            <p>Water content is only provided for Fresubin Original.</p>
+        </div>
+        <div class="flex-container">
+            <a href="https://www.fresenius-kabi.com/ie/documents/EN00998_Fresenius_Flip_Book_Jun16-FINAL_PROOF_MaD.pdf" class="calculator-btn">Fresenius Enteral Nutrition Product Information</a>
+        </div>
+        <div class="flex-container">
+            <a href="https://www.anm.ro/_/_RCP/rcp_440_31.12.07.pdf" class="calculator-btn">RCP Kabiven Peripheral</a>
+        </div>
+        <div class="flex-container">
+            <a href="https://www.bbraun.ph/content/dam/catalog/bbraun/bbraunProductCatalog/S/AEM2015/en-ph/b/12260668-1012-nutriflexlipidperi.pdf" class="calculator-btn">NuTRIflex Lipid Peri Product Information</a>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function nutri_comp () {
+                var weight = +document.getElementById('weight').value;
+                //Fresubin Original
+                var fresubin_flow = +document.getElementById('fresubin-flow').value;
+                var fresubin_time = +document.getElementById('fresubin-time').value;
+                var energy_calc = (fresubin_flow*fresubin_time)/weight;
+                var protein_calc = (fresubin_flow*fresubin_time*0.038)/weight;
+                var carbs_calc = (fresubin_flow*fresubin_time*0.138)/weight;
+                var fat_calc = (fresubin_flow*fresubin_time*0.034)/weight;
+                var water_calc = fresubin_flow*0.84;
+                
+                //Kabiven Peripheral
+                var kabiven_flow = +document.getElementById('kabiven-flow').value;
+                var kabiven_time = +document.getElementById('kabiven-time').value;
+                energy_calc += (kabiven_flow*kabiven_time*0.7)/weight;
+                protein_calc += (kabiven_flow*kabiven_time*0.0236)/weight;
+                carbs_calc += (kabiven_flow*kabiven_time*0.0673)/weight;
+                fat_calc += (kabiven_flow*kabiven_time*0.0354)/weight;
+                
+                //Nutriflex Lipid Peri
+                var nutriflex_flow = +document.getElementById('nutriflex-flow').value;
+                var nutriflex_time = +document.getElementById('nutriflex-time').value;
+                energy_calc += (nutriflex_flow*nutriflex_time*0.76)/weight;
+                protein_calc += (nutriflex_flow*nutriflex_time*0.032)/weight;
+                carbs_calc += (nutriflex_flow*nutriflex_time*0.064)/weight;
+                fat_calc += (nutriflex_flow*nutriflex_time*0.04)/weight;
+                
+                document.getElementById('energy').innerHTML = energy_calc.toFixed(0)+' kcal/kg';
+                document.getElementById('protein').innerHTML = protein_calc.toFixed(1)+' g/kg';
+                document.getElementById('carbs').innerHTML = carbs_calc.toFixed(1)+' g/kg';
+                document.getElementById('fat').innerHTML = fat_calc.toFixed(1)+' g/kg';
+                document.getElementById('water').innerHTML = water_calc.toFixed(0)+' ml/h';
+            }
+        </script>
+    </body>
+</html>

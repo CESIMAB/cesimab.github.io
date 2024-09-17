@@ -15,6 +15,11 @@ h1
     font-size: 8vw;
 }
 
+hr
+{
+    width: 90%;
+}
+
 .flex-container
 {
     display: -webkit-flex;
