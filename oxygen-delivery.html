@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>Oxygen Delivery</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>Oxygen Delivery</h1>
+        
+        <div class="flex-container">
+            <span class="param-name">Cardiac Output (L/min)</span>
+            <input type="number" id="co" class="param-input" oninput="do2()" autofocus>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Hb (g/dL)</span>
+            <input type="number" id="hb" class="param-input" oninput="do2()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">SaO2 (%)</span>
+            <input type="number" id="sao2" class="param-input" oninput="do2()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">PaO2 (mmHg)</span>
+            <input type="number" id="pao2" class="param-input" oninput="do2()">
+        </div>
+        <div class="flex-container">
+           <div class="flex-container flex-output">
+                <span class="param-output-name">Oxygen Delivery</span>
+                <span class="param-output-value" id="do2">N/A</span>
+           </div>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function do2 () {
+                var co = +document.getElementById('co').value;
+                var hb = +document.getElementById('hb').value;
+                var sao2 = +document.getElementById('sao2').value;
+                var pao2 = +document.getElementById('pao2').value;
+                var cao2 = (1.34*hb*(sao2/100))+(pao2*0.003);
+                var calc_do2 = co*10*cao2;
+                document.getElementById('do2').innerHTML = calc_do2.toFixed(0)+' mL/min';
+            }
+        </script>
+    </body>
+</html>
