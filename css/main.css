@@ -38,10 +38,25 @@ hr
     text-align: center;
     padding: 2vw;
     border-radius: 1vw;
-    background-color: darkcyan;
+    /*background-color: darkcyan;*/
     color: white;
     text-decoration: none;
     font-weight: bold;
+}
+
+.crimson-btn
+{
+    background-color: crimson;
+}
+
+.midnightblue-btn
+{
+    background-color: midnightblue;
+}
+
+.darkcyan-btn
+{
+    background-color: darkcyan;
 }
 
 /*Formula Page CSS*/
