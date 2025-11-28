@@ -52,14 +52,14 @@
                 var hb = +document.getElementById('hb').value;
                 var sao2 = +document.getElementById('sao2').value;
                 var pao2 = +document.getElementById('pao2').value;
-		var height = +document.getElementById('height').value;
-		var weight = +document.getElementById('weight').value;
+                var height = +document.getElementById('height').value;
+                var weight = +document.getElementById('weight').value;
                 var cao2 = (1.34*hb*(sao2/100))+(pao2*0.003);
                 var calc_do2 = co*10*cao2;
-		var calc_bsa = 0.016667*(height**0.5)*(weight**0.5);
-		var calc_do2i = calc_do2/calc_bsa; 
+                var calc_bsa = 0.016667*(height**0.5)*(weight**0.5);
+                var calc_do2i = calc_do2/calc_bsa; 
                 document.getElementById('do2').innerHTML = calc_do2.toFixed(0)+' mL/min';
-		document.getElementById('do2i').innerHTML = calc_do2i.toFixed(0)+' mL/min*m^2';
+                document.getElementById('do2i').innerHTML = calc_do2i.toFixed(0)+' mL/min*m^2';
             }
         </script>
     </body>

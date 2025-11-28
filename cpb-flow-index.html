@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+        <title>CPB Flow & Index</title>
+        
+        <link rel="stylesheet" type="text/css" href="css/main.css" />
+    </head>
+    <body>
+        <h1>CPB Flow & Index</h1>
+        
+        <div class="flex-container">
+            <span class="param-name">DO2i (ml/min*m^2)</span>
+            <input type="number" id="do2i" class="param-input" oninput="flow()" autofocus>
+        </div>
+        <div class="flex-container">
+            <span class="param-name">Hb (g/dL)</span>
+            <input type="number" id="hb" class="param-input" oninput="flow()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">SaO2 (%)</span>
+            <input type="number" id="sao2" class="param-input" oninput="flow()">
+        </div>
+        <div class="flex-container">
+            <span class="param-name">PaO2 (mmHg)</span>
+            <input type="number" id="pao2" class="param-input" oninput="flow()">
+        </div>
+	<div class="flex-container">
+            <span class="param-name">Weight (kg)</span>
+            <input type="number" id="weight" class="param-input" oninput="flow()">
+        </div>
+	<div class="flex-container">
+            <span class="param-name">Height (cm)</span>
+            <input type="number" id="height" class="param-input" oninput="flow()">
+        </div>
+        <div class="flex-container">
+            <div class="flex-container flex-output">
+                <span class="param-output-name">Target Flow</span>
+                <span class="param-output-value" id="flow">N/A</span>
+            </div>
+            <div class="flex-container flex-output">
+                <span class="param-output-name">Target CI</span>
+                <span class="param-output-value" id="ci">N/A</span>
+            </div>
+            <div class="flex-container flex-output">
+                <span class="param-output-name">CaO2</span>
+                <span class="param-output-value" id="cao2">N/A</span>
+            </div>
+        </div>
+        
+        <!--Scripts-->
+        <script>
+            function flow () {
+                var do2i = +document.getElementById('do2i').value;
+                var hb = +document.getElementById('hb').value;
+                var sao2 = +document.getElementById('sao2').value;
+                var pao2 = +document.getElementById('pao2').value;
+                var height = +document.getElementById('height').value;
+                var weight = +document.getElementById('weight').value;
+                var cao2 = (1.34*hb*(sao2/100))+(pao2*0.003);
+                var calc_ci = do2i/(cao2*10);
+                var calc_bsa = 0.016667*(height**0.5)*(weight**0.5);
+                var calc_co = calc_ci*calc_bsa; 
+                document.getElementById('flow').innerHTML = calc_co.toFixed(2)+' mL/min';
+                document.getElementById('ci').innerHTML = calc_ci.toFixed(2)+' mL/min*m^2';
+                //document.getElementById('cao2').innerHTML = cao2.toFixed(0)+' mL O2/dL';
+            }
+        </script>
+    </body>
+</html>
