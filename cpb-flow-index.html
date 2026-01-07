@@ -43,6 +43,14 @@
                 <span class="param-output-name">Target CI</span>
                 <span class="param-output-value" id="ci">N/A</span>
             </div>
+            <div class="flex-container flex-output">
+                <span class="param-output-name">BSA</span>
+                <span class="param-output-value" id="bsa">N/A</span>
+            </div>
+            <div class="flex-container flex-output">
+                <span class="param-output-name">Flow @CI 2.4</span>
+                <span class="param-output-value" id="co24">N/A</span>
+            </div>
             <!--
             <div class="flex-container flex-output">
                 <span class="param-output-name">CaO2</span>
@@ -64,8 +72,11 @@
                 var calc_ci = do2i/(cao2*10);
                 var calc_bsa = 0.016667*(height**0.5)*(weight**0.5);
                 var calc_co = calc_ci*calc_bsa; 
+                var calc_co24 = 2.4*calc_bsa; 
                 document.getElementById('flow').innerHTML = calc_co.toFixed(2)+' mL/min';
                 document.getElementById('ci').innerHTML = calc_ci.toFixed(2)+' mL/min*m^2';
+                document.getElementById('bsa').innerHTML = calc_bsa.toFixed(2)+' m^2';
+                document.getElementById('co24').innerHTML = calc_co24.toFixed(2)+' mL/min';
                 //document.getElementById('cao2').innerHTML = cao2.toFixed(0)+' mL O2/dL';
             }
         </script>
