@@ -1,57 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Heparin Sliding Scale</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Heparin Sliding Scale</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="hep_delta()">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heparin Sliding Scale - CESIMAB Toolbox</title>
+    <meta name="description" content="Weight-based heparin dosing protocol with aPTT-guided adjustments">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">aPTT (s)</span>
-            <input type="number" id="aptt" class="param-input" oninput="hep_delta()">
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>🧪 Heparin Sliding Scale</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateHeparinDelta();" step="0.1" min="0" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="aptt" class="form-label">aPTT (seconds)</label>
+                            <input type="number" id="aptt" class="form-input" placeholder="Current aPTT" oninput="calculateHeparinDelta()" step="1" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Heparin Protocol Results</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Rate Adjustment</div>
+                        <div class="result-value" id="hep-delta">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Infusion Rate Change</div>
+                        <div class="result-value" id="ml-delta">N/A</div>
+                    </div>
+                    <div class="result-card accent">
+                        <div class="result-label">Action Required</div>
+                        <div class="result-value" id="action">N/A</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Heparin delta</span>
-                <span class="param-output-value" id="hep-delta">N/A</span>
-           </div>
-        </div>
-        
-        <!--Scripts-->
-        <script>
-            function hep_delta () {
-                var hep_multiplier = 0;
-                var infusion = "No pause"
-                var aptt = document.getElementById('aptt').value;
-                if (aptt < 46) {
-                    hep_multiplier = 4;
-                } else if (aptt < 56) {
-                    hep_multiplier = 2;
-                } else if (aptt < 66) {
-                    hep_multiplier = 0;
-                } else if (aptt < 76) {
-                    hep_multiplier = -1;
-                } else if (aptt < 91) {
-                    hep_multiplier = -2;
-                } else if (aptt < 101) {
-                    hep_multiplier = -3;
-                    infusion = "Stop 1h"
-                } else if (aptt > 100) {
-                    hep_multiplier = -4;
-                    infusion = "Stop 2h"
-                }
-                var weight = +document.getElementById('weight').value;
-                var hep_delta_calc = weight*hep_multiplier/200;
-                document.getElementById('hep-delta').innerHTML = hep_delta_calc.toFixed(2)+' ml/h<br>'+infusion;
+    </main>
+
+    <script>
+        function calculateHeparinDelta() {
+            const weight = +document.getElementById('weight').value;
+            const aptt = +document.getElementById('aptt').value;
+            
+            if (!weight || !aptt) {
+                document.getElementById('hep-delta').innerHTML = 'N/A';
+                document.getElementById('ml-delta').innerHTML = 'N/A';
+                document.getElementById('action').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            let hep_multiplier = 0;
+            let infusion_action = "Continue infusion";
+            let rate_change = "";
+            
+            if (aptt < 46) {
+                hep_multiplier = 4;
+                rate_change = "Increase";
+            } else if (aptt <= 55) {
+                hep_multiplier = 2;
+                rate_change = "Increase";
+            } else if (aptt <= 65) {
+                hep_multiplier = 0;
+                rate_change = "No change";
+                infusion_action = "Therapeutic range";
+            } else if (aptt <= 75) {
+                hep_multiplier = -1;
+                rate_change = "Decrease";
+            } else if (aptt <= 90) {
+                hep_multiplier = -2;
+                rate_change = "Decrease";
+            } else if (aptt <= 100) {
+                hep_multiplier = -3;
+                infusion_action = "Stop for 1 hour";
+                rate_change = "Decrease";
+            } else {
+                hep_multiplier = -4;
+                infusion_action = "Stop for 2 hours";
+                rate_change = "Decrease";
+            }
+            
+            const hep_delta_calc = Math.abs(weight * hep_multiplier);
+            const sign = hep_multiplier >= 0 ? '+' : '-';
+            
+            // Calculate ml/h change based on heparin concentration: 10000 units/50ml = 200 units/ml
+            const hep_concentration = 200; // units/ml
+            const ml_delta_calc = hep_delta_calc / hep_concentration;
+            
+            if (hep_multiplier === 0) {
+                document.getElementById('hep-delta').innerHTML = 'No change<br><small>therapeutic</small>';
+                document.getElementById('ml-delta').innerHTML = 'No change<br><small>therapeutic</small>';
+            } else {
+                document.getElementById('hep-delta').innerHTML = sign + hep_delta_calc.toFixed(0) + '<br><small>units/h</small>';
+                document.getElementById('ml-delta').innerHTML = sign + ml_delta_calc.toFixed(1) + '<br><small>ml/h</small>';
+            }
+            
+            document.getElementById('action').innerHTML = infusion_action + '<br><small>' + rate_change + '</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

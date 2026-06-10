@@ -1,48 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Nitrogen Balance</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Nitrogen Balance</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Protein Intake (g)</span>
-            <input type="number" id="intake" class="param-input" oninput="nb()">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nitrogen Balance Calculator - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate nitrogen balance to assess protein metabolism and nutritional status">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Urinary Urea (mg/dL)</span>
-            <input type="number" id="urea" class="param-input" oninput="nb()">
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>🍽️ Nitrogen Balance Calculator</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Protein Intake</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="intake" class="form-label">Protein Intake (g/day)</label>
+                            <input type="number" id="intake" class="form-input" placeholder="Daily protein intake" oninput="calculateNitrogenBalance()" step="0.1" min="0" autofocus>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">24-Hour Urine Collection</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="urea" class="form-label">Urinary Urea (mg/dL)</label>
+                            <input type="number" id="urea" class="form-input" placeholder="Urea concentration" oninput="calculateNitrogenBalance()" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="creatinine" class="form-label">Urinary Creatinine (mg/dL)</label>
+                            <input type="number" id="creatinine" class="form-input" placeholder="Creatinine concentration" oninput="calculateNitrogenBalance()" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="volume" class="form-label">24h Urine Volume (mL)</label>
+                            <input type="number" id="volume" class="form-input" placeholder="Total urine volume" oninput="calculateNitrogenBalance()" step="10" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Nitrogen Balance Results</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Nitrogen Balance</div>
+                        <div class="result-value" id="nb">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Nitrogen Intake</div>
+                        <div class="result-value" id="n-intake">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Nitrogen Output</div>
+                        <div class="result-value" id="n-output">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md); font-size: 1.125rem;">Clinical Notes</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg);">
+                    <li><strong>Formula:</strong> N Balance = (Protein intake ÷ 6.25) - (Urinary N + 4g insensible losses)</li>
+                </ul>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Urinary Creatinine (mg/dL)</span>
-            <input type="number" id="creatinine" class="param-input" oninput="nb()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Urinary Volume (mL)</span>
-            <input type="number" id="volume" class="param-input" oninput="nb()">
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">NB</span>
-                <span class="param-output-value" id="nb">N/A</span>
-           </div>
-        </div>
-        
-        <!--Scripts-->
-        <script>
-            function nb () {
-                var intake = document.getElementById('intake').value;
-                var urea = document.getElementById('urea').value;
-                var creatinine = document.getElementById('creatinine').value;
-                var volume = document.getElementById('volume').value;
-                var nb_calc = (intake/6.25) - (urea*28/60 + creatinine*42/113)*Math.pow(10, -5)*volume - 4;
-                document.getElementById('nb').innerHTML = nb_calc.toFixed(2)+' g';
+    </main>
+
+    <script>
+        function calculateNitrogenBalance() {
+            const intake = +document.getElementById('intake').value;
+            const urea = +document.getElementById('urea').value;
+            const creatinine = +document.getElementById('creatinine').value;
+            const volume = +document.getElementById('volume').value;
+            
+            if (!intake || !urea || !creatinine || !volume) {
+                document.getElementById('nb').innerHTML = 'N/A';
+                document.getElementById('n-intake').innerHTML = 'N/A';
+                document.getElementById('n-output').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            // Calculate nitrogen intake (protein ÷ 6.25)
+            const n_intake = intake / 6.25;
+            
+            // Calculate urinary nitrogen output
+            const urinary_n = (urea * 28/60 + creatinine * 42/113) * Math.pow(10, -5) * volume;
+            
+            // Total nitrogen output (urinary + 4g insensible losses)
+            const n_output = urinary_n + 4;
+            
+            // Nitrogen balance
+            const nb_calc = n_intake - n_output;
+            
+            // Update results
+            document.getElementById('nb').innerHTML = nb_calc.toFixed(2) + '<br><small>g N/day</small>';
+            document.getElementById('n-intake').innerHTML = n_intake.toFixed(2) + '<br><small>g N/day</small>';
+            document.getElementById('n-output').innerHTML = n_output.toFixed(2) + '<br><small>g N/day</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

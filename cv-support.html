@@ -1,78 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Cardiovascular Support Drugs</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Cardiovascular Support Drugs</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="na_dose(); db_dose();">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Support Drugs Calculator - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate dosing for cardiovascular support medications including noradrenaline and dobutamine">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">NA Concentration</span>
-            <select name="" id="na-concentration" class="param-input" oninput="na_dose()">
-                <option value="4/50">4mg/50ml</option>
-                <option value="8/50">8mg/50ml</option>
-                <option value="16/50">16mg/50ml</option>
-                <option value="32/50">32mg/50ml</option>
-            </select>
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>💊 CV Support Drugs Calculator</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateNaDose(); calculateDbDose(); calculateAdrDose(); calculateVasoDose();" step="0.1" min="0" autofocus>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Noradrenaline (Norepinephrine)</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="na-concentration" class="form-label">Concentration</label>
+                            <select id="na-concentration" class="form-input" oninput="calculateNaDose()">
+                                <option value="4/50">4mg in 50ml (0.08 mg/ml)</option>
+                                <option value="8/50">8mg in 50ml (0.16 mg/ml)</option>
+                                <option value="16/50">16mg in 50ml (0.32 mg/ml)</option>
+                                <option value="32/50">32mg in 50ml (0.64 mg/ml)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="na-flow" class="form-label">Infusion Rate (ml/h)</label>
+                            <input type="number" id="na-flow" class="form-input" placeholder="Flow rate" oninput="calculateNaDose()" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Dobutamine</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="db-concentration" class="form-label">Concentration</label>
+                            <select id="db-concentration" class="form-input" oninput="calculateDbDose()">
+                                <option value="250/50">250mg in 50ml (5 mg/ml)</option>
+                                <option value="500/50">500mg in 50ml (10 mg/ml)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="db-flow" class="form-label">Infusion Rate (ml/h)</label>
+                            <input type="number" id="db-flow" class="form-input" placeholder="Flow rate" oninput="calculateDbDose()" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Adrenaline (Epinephrine)</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="adr-concentration" class="form-label">Concentration</label>
+                            <select id="adr-concentration" class="form-input" oninput="calculateAdrDose()">
+                                <option value="1/50">1mg in 50ml (0.02 mg/ml)</option>
+                                <option value="3/50" selected>3mg in 50ml (0.06 mg/ml)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="adr-flow" class="form-label">Infusion Rate (ml/h)</label>
+                            <input type="number" id="adr-flow" class="form-input" placeholder="Flow rate" oninput="calculateAdrDose()" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Vasopressin</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="vaso-concentration" class="form-label">Concentration</label>
+                            <select id="vaso-concentration" class="form-input" oninput="calculateVasoDose()">
+                                <option value="20/50">20 units in 50ml (0.4 units/ml)</option>
+                                <option value="40/50" selected>40 units in 50ml (0.8 units/ml)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="vaso-flow" class="form-label">Infusion Rate (ml/h)</label>
+                            <input type="number" id="vaso-flow" class="form-input" placeholder="Flow rate" oninput="calculateVasoDose()" step="0.1" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Calculated Doses</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Noradrenaline Dose</div>
+                        <div class="result-value" id="na-dose">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Dobutamine Dose</div>
+                        <div class="result-value" id="db-dose">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Adrenaline Dose</div>
+                        <div class="result-value" id="adr-dose">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Vasopressin Dose</div>
+                        <div class="result-value" id="vaso-dose">N/A</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
-        <div class="flex-container">
-            <span class="param-name">NA Flow (ml/h)</span>
-            <input type="number" id="na-flow" class="param-input" oninput="na_dose()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">DB Flow (ml/h)</span>
-            <input type="number" id="db-flow" class="param-input" oninput="db_dose()">
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">NA dose</span>
-                <span class="param-output-value" id="na-dose">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">DB dose</span>
-                <span class="param-output-value" id="db-dose">N/A</span>
-           </div>
-        </div>
-        
-        <!--Scripts-->
-        <script>
-            function na_dose () {
-                var na_concentration = 0;
-                switch (document.getElementById('na-concentration').value) {
-                    case '4/50':
-                        na_concentration = 0.08;
-                        break;
-                    case '8/50':
-                        na_concentration = 0.16;
-                        break;
-                    case '16/50':
-                        na_concentration = 0.32;
-                        break;
-                    case '32/50':
-                        na_concentration = 0.64;
-                        break;
-                    default:
-                        na_concentration = 0.08;
-                }
-                var na_flow = +document.getElementById('na-flow').value;
-                var weight = +document.getElementById('weight').value;
-                var na_dose_calc = (na_flow*na_concentration)/(weight*60)*1000000;
-                document.getElementById('na-dose').innerHTML = na_dose_calc.toFixed(2)+' ng/kg*min';
+    </main>
+
+    <script>
+        function calculateNaDose() {
+            const weight = +document.getElementById('weight').value;
+            const na_flow = +document.getElementById('na-flow').value;
+            const na_concentration_value = document.getElementById('na-concentration').value;
+            
+            if (!weight || !na_flow) {
+                document.getElementById('na-dose').innerHTML = 'N/A';
+                return;
             }
-            function db_dose () {
-                var db_flow = +document.getElementById('db-flow').value;
-                var weight = +document.getElementById('weight').value;
-                var db_dose_calc = (db_flow*5)/(weight*60)*1000;
-                document.getElementById('db-dose').innerHTML = db_dose_calc.toFixed(2)+' mcg/kg*min';
+            
+            let na_concentration = 0;
+            switch (na_concentration_value) {
+                case '4/50': na_concentration = 0.08; break;
+                case '8/50': na_concentration = 0.16; break;
+                case '16/50': na_concentration = 0.32; break;
+                case '32/50': na_concentration = 0.64; break;
+                default: na_concentration = 0.08;
             }
-        </script>
-    </body>
+            
+            const na_dose_calc = (na_flow * na_concentration) / (weight * 60) * 1000000; // Convert to nanograms
+            document.getElementById('na-dose').innerHTML = na_dose_calc.toFixed(0) + '<br><small>ng/kg·min</small>';
+        }
+        
+        function calculateDbDose() {
+            const weight = +document.getElementById('weight').value;
+            const db_flow = +document.getElementById('db-flow').value;
+            const db_concentration_value = document.getElementById('db-concentration').value;
+            
+            if (!weight || !db_flow) {
+                document.getElementById('db-dose').innerHTML = 'N/A';
+                return;
+            }
+            
+            let db_concentration = 0;
+            switch (db_concentration_value) {
+                case '250/50': db_concentration = 5; break;
+                case '500/50': db_concentration = 10; break;
+                default: db_concentration = 5;
+            }
+            
+            const db_dose_calc = (db_flow * db_concentration) / (weight * 60) * 1000;
+            document.getElementById('db-dose').innerHTML = db_dose_calc.toFixed(2) + '<br><small>mcg/kg·min</small>';
+        }
+        
+        function calculateAdrDose() {
+            const weight = +document.getElementById('weight').value;
+            const adr_flow = +document.getElementById('adr-flow').value;
+            const adr_concentration_value = document.getElementById('adr-concentration').value;
+            
+            if (!weight || !adr_flow) {
+                document.getElementById('adr-dose').innerHTML = 'N/A';
+                return;
+            }
+            
+            let adr_concentration = 0;
+            switch (adr_concentration_value) {
+                case '1/50': adr_concentration = 0.02; break;
+                case '3/50': adr_concentration = 0.06; break;
+                default: adr_concentration = 0.06;
+            }
+            
+            const adr_dose_calc = (adr_flow * adr_concentration) / (weight * 60) * 1000000; // Convert to nanograms
+            document.getElementById('adr-dose').innerHTML = adr_dose_calc.toFixed(0) + '<br><small>ng/kg·min</small>';
+        }
+        
+        function calculateVasoDose() {
+            const vaso_flow = +document.getElementById('vaso-flow').value;
+            const vaso_concentration_value = document.getElementById('vaso-concentration').value;
+            
+            if (!vaso_flow) {
+                document.getElementById('vaso-dose').innerHTML = 'N/A';
+                return;
+            }
+            
+            let vaso_concentration = 0;
+            switch (vaso_concentration_value) {
+                case '20/50': vaso_concentration = 0.4; break;
+                case '40/50': vaso_concentration = 0.8; break;
+                default: vaso_concentration = 0.4;
+            }
+            
+            const vaso_dose_calc = (vaso_flow * vaso_concentration) / 60;
+            document.getElementById('vaso-dose').innerHTML = vaso_dose_calc.toFixed(3) + '<br><small>units/min</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

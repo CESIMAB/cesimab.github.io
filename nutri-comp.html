@@ -1,127 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Nutritional Composition Calculator</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Nutritional Composition Calculator</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="nutri_comp()">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICU Calorie Counter - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate nutritional composition from enteral and parenteral nutrition products">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container section-header">
-            <h2>Fresubin Original</h2>
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Flow (ml/h)</span>
-            <input type="number" id="fresubin-flow" class="param-input" oninput="nutri_comp()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Time (h)</span>
-            <input type="number" id="fresubin-time" class="param-input" oninput="nutri_comp()" value="24">
-        </div>
-        <div class="flex-container section-header">
-            <h2>Kabiven Peripheral</h2>
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Flow (ml/h)</span>
-            <input type="number" id="kabiven-flow" class="param-input" oninput="nutri_comp()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Time (h)</span>
-            <input type="number" id="kabiven-time" class="param-input" oninput="nutri_comp()" value="24">
-        </div>
-        <div class="flex-container section-header">
-            <h2>NuTRIflex Lipid Peri</h2>
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Flow (ml/h)</span>
-            <input type="number" id="nutriflex-flow" class="param-input" oninput="nutri_comp()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Time (h)</span>
-            <input type="number" id="nutriflex-time" class="param-input" oninput="nutri_comp()" value="24">
-        </div>
-        
-        <!--Outputs-->
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Energy</span>
-                <span class="param-output-value" id="energy">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Protein</span>
-                <span class="param-output-value" id="protein">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Carbohydrate</span>
-                <span class="param-output-value" id="carbs">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Fat</span>
-                <span class="param-output-value" id="fat">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Water</span>
-                <span class="param-output-value" id="water">N/A</span>
-           </div>
-        </div>
-        
-        <!--Other Info-->
-        <hr/>
-        <div class="flex-container">
-            <p>Water content is only provided for Fresubin Original.</p>
-        </div>
-        <div class="flex-container">
-            <a href="https://www.fresenius-kabi.com/ie/documents/EN00998_Fresenius_Flip_Book_Jun16-FINAL_PROOF_MaD.pdf" class="calculator-btn">Fresenius Enteral Nutrition Product Information</a>
-        </div>
-        <div class="flex-container">
-            <a href="https://www.anm.ro/_/_RCP/rcp_440_31.12.07.pdf" class="calculator-btn">RCP Kabiven Peripheral</a>
-        </div>
-        <div class="flex-container">
-            <a href="https://www.bbraun.ph/content/dam/catalog/bbraun/bbraunProductCatalog/S/AEM2015/en-ph/b/12260668-1012-nutriflexlipidperi.pdf" class="calculator-btn">NuTRIflex Lipid Peri Product Information</a>
-        </div>
-        
-        <!--Scripts-->
-        <script>
-            function nutri_comp () {
-                var weight = +document.getElementById('weight').value;
-                //Fresubin Original
-                var fresubin_flow = +document.getElementById('fresubin-flow').value;
-                var fresubin_time = +document.getElementById('fresubin-time').value;
-                var energy_calc = (fresubin_flow*fresubin_time)/weight;
-                var protein_calc = (fresubin_flow*fresubin_time*0.038)/weight;
-                var carbs_calc = (fresubin_flow*fresubin_time*0.138)/weight;
-                var fat_calc = (fresubin_flow*fresubin_time*0.034)/weight;
-                var water_calc = fresubin_flow*0.84;
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>📊 ICU Calorie Counter</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateNutriComp()" step="0.1" min="0" autofocus>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Fresubin Original (Enteral)</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="fresubin-flow" class="form-label">Flow Rate (ml/h)</label>
+                            <input type="number" id="fresubin-flow" class="form-input" placeholder="Enteral feeding rate" oninput="calculateNutriComp()" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="fresubin-time" class="form-label">Duration (hours)</label>
+                            <input type="number" id="fresubin-time" class="form-input" placeholder="Feeding duration" oninput="calculateNutriComp()" value="24" step="1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Kabiven Peripheral (TPN)</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="kabiven-flow" class="form-label">Flow Rate (ml/h)</label>
+                            <input type="number" id="kabiven-flow" class="form-input" placeholder="TPN infusion rate" oninput="calculateNutriComp()" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="kabiven-time" class="form-label">Duration (hours)</label>
+                            <input type="number" id="kabiven-time" class="form-input" placeholder="Infusion duration" oninput="calculateNutriComp()" value="24" step="1" min="0">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">NuTRIflex Lipid Peri (TPN)</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nutriflex-flow" class="form-label">Flow Rate (ml/h)</label>
+                            <input type="number" id="nutriflex-flow" class="form-input" placeholder="TPN infusion rate" oninput="calculateNutriComp()" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="nutriflex-time" class="form-label">Duration (hours)</label>
+                            <input type="number" id="nutriflex-time" class="form-input" placeholder="Infusion duration" oninput="calculateNutriComp()" value="24" step="1" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Nutritional Composition</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Total Energy</div>
+                        <div class="result-value" id="energy">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Protein</div>
+                        <div class="result-value" id="protein">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Carbohydrates</div>
+                        <div class="result-value" id="carbs">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Fat</div>
+                        <div class="result-value" id="fat">N/A</div>
+                    </div>
+                    <div class="result-card accent">
+                        <div class="result-label">Water Intake</div>
+                        <div class="result-value" id="water">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md); font-size: 1.125rem;">Product Information</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--spacing-lg);">
+                    <div>
+                        <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-sm);">Fresubin Original</h4>
+                        <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg); font-size: 0.875rem;">
+                            <li>1 kcal/ml</li>
+                            <li>3.8g protein/100ml</li>
+                            <li>13.8g carbs/100ml</li>
+                            <li>3.4g fat/100ml</li>
+                            <li>84% water content</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-sm);">Kabiven Peripheral</h4>
+                        <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg); font-size: 0.875rem;">
+                            <li>0.7 kcal/ml</li>
+                            <li>2.36g protein/100ml</li>
+                            <li>6.73g carbs/100ml</li>
+                            <li>3.54g fat/100ml</li>
+                            <li>Peripheral TPN</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 style="color: var(--text-primary); margin-bottom: var(--spacing-sm);">NuTRIflex Lipid Peri</h4>
+                        <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg); font-size: 0.875rem;">
+                            <li>0.76 kcal/ml</li>
+                            <li>3.2g protein/100ml</li>
+                            <li>6.4g carbs/100ml</li>
+                            <li>4.0g fat/100ml</li>
+                            <li>Peripheral TPN</li>
+                        </ul>
+                    </div>
+                </div>
                 
-                //Kabiven Peripheral
-                var kabiven_flow = +document.getElementById('kabiven-flow').value;
-                var kabiven_time = +document.getElementById('kabiven-time').value;
-                energy_calc += (kabiven_flow*kabiven_time*0.7)/weight;
-                protein_calc += (kabiven_flow*kabiven_time*0.0236)/weight;
-                carbs_calc += (kabiven_flow*kabiven_time*0.0673)/weight;
-                fat_calc += (kabiven_flow*kabiven_time*0.0354)/weight;
-                
-                //Nutriflex Lipid Peri
-                var nutriflex_flow = +document.getElementById('nutriflex-flow').value;
-                var nutriflex_time = +document.getElementById('nutriflex-time').value;
-                energy_calc += (nutriflex_flow*nutriflex_time*0.76)/weight;
-                protein_calc += (nutriflex_flow*nutriflex_time*0.032)/weight;
-                carbs_calc += (nutriflex_flow*nutriflex_time*0.064)/weight;
-                fat_calc += (nutriflex_flow*nutriflex_time*0.04)/weight;
-                
-                document.getElementById('energy').innerHTML = energy_calc.toFixed(0)+' kcal/kg';
-                document.getElementById('protein').innerHTML = protein_calc.toFixed(1)+' g/kg';
-                document.getElementById('carbs').innerHTML = carbs_calc.toFixed(1)+' g/kg';
-                document.getElementById('fat').innerHTML = fat_calc.toFixed(1)+' g/kg';
-                document.getElementById('water').innerHTML = water_calc.toFixed(0)+' ml/h';
+                <div style="margin-top: var(--spacing-md); padding: var(--spacing-md); background: rgba(234, 88, 12, 0.1); border-radius: var(--radius-md); border-left: 4px solid var(--accent-orange);">
+                    <p style="color: var(--text-primary); font-weight: 500; margin: 0;"><strong>⚠️ Important:</strong> Always verify actual product information and concentrations before clinical use. Product formulations may vary by manufacturer and region.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function calculateNutriComp() {
+            const weight = +document.getElementById('weight').value;
+            
+            if (!weight) {
+                document.getElementById('energy').innerHTML = 'N/A';
+                document.getElementById('protein').innerHTML = 'N/A';
+                document.getElementById('carbs').innerHTML = 'N/A';
+                document.getElementById('fat').innerHTML = 'N/A';
+                document.getElementById('water').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            // Fresubin Original
+            const fresubin_flow = +document.getElementById('fresubin-flow').value || 0;
+            const fresubin_time = +document.getElementById('fresubin-time').value || 0;
+            let energy_calc = (fresubin_flow * fresubin_time) / weight;
+            let protein_calc = (fresubin_flow * fresubin_time * 0.038) / weight;
+            let carbs_calc = (fresubin_flow * fresubin_time * 0.138) / weight;
+            let fat_calc = (fresubin_flow * fresubin_time * 0.034) / weight;
+            const water_calc = fresubin_flow * 0.84;
+            
+            // Kabiven Peripheral
+            const kabiven_flow = +document.getElementById('kabiven-flow').value || 0;
+            const kabiven_time = +document.getElementById('kabiven-time').value || 0;
+            energy_calc += (kabiven_flow * kabiven_time * 0.7) / weight;
+            protein_calc += (kabiven_flow * kabiven_time * 0.0236) / weight;
+            carbs_calc += (kabiven_flow * kabiven_time * 0.0673) / weight;
+            fat_calc += (kabiven_flow * kabiven_time * 0.0354) / weight;
+            
+            // Nutriflex Lipid Peri
+            const nutriflex_flow = +document.getElementById('nutriflex-flow').value || 0;
+            const nutriflex_time = +document.getElementById('nutriflex-time').value || 0;
+            energy_calc += (nutriflex_flow * nutriflex_time * 0.76) / weight;
+            protein_calc += (nutriflex_flow * nutriflex_time * 0.032) / weight;
+            carbs_calc += (nutriflex_flow * nutriflex_time * 0.064) / weight;
+            fat_calc += (nutriflex_flow * nutriflex_time * 0.04) / weight;
+            
+            // Update results
+            document.getElementById('energy').innerHTML = energy_calc.toFixed(0) + '<br><small>kcal/kg/day</small>';
+            document.getElementById('protein').innerHTML = protein_calc.toFixed(1) + '<br><small>g/kg/day</small>';
+            document.getElementById('carbs').innerHTML = carbs_calc.toFixed(1) + '<br><small>g/kg/day</small>';
+            document.getElementById('fat').innerHTML = fat_calc.toFixed(1) + '<br><small>g/kg/day</small>';
+            document.getElementById('water').innerHTML = water_calc.toFixed(0) + '<br><small>ml/h</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

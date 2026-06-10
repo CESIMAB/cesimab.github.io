@@ -1,48 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>ACT Reversal</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>ACT Reversal</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Base ACT (s)</span>
-            <input type="number" id="base-act" class="param-input" oninput="exp_prota()" autofocus>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACT Reversal Calculator - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate protamine dosing for heparin reversal based on ACT measurements">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Heparin bolus (IU)</span>
-            <input type="number" id="hep-bolus" class="param-input" oninput="exp_prota()">
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>💉 ACT Reversal Calculator</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">ACT Measurements</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="base-act" class="form-label">Baseline ACT (seconds)</label>
+                            <input type="number" id="base-act" class="form-input" placeholder="Pre-heparin ACT" oninput="calculateActReversal()" step="1" min="0" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="post-hep-act" class="form-label">Post-Heparin ACT (seconds)</label>
+                            <input type="number" id="post-hep-act" class="form-input" placeholder="ACT after heparin" oninput="calculateActReversal()" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="final-act" class="form-label">Current ACT (seconds)</label>
+                            <input type="number" id="final-act" class="form-input" placeholder="Current ACT reading" oninput="calculateActReversal()" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="hep-bolus" class="form-label">Heparin Dose (IU)</label>
+                            <input type="number" id="hep-bolus" class="form-input" placeholder="Heparin bolus" oninput="calculateActReversal()" step="1000" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Calculated Results</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Protamine Dose</div>
+                        <div class="result-value" id="prota">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md); font-size: 1.125rem;">Clinical Notes</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg);">
+                    <li><strong>Normal ACT:</strong> 80-120 seconds</li>
+                    <li><strong>Target ACT for CPB:</strong> >480 seconds</li>
+                    <li><strong>Protamine Ratio:</strong> Typically 1:1 to 1.3:1 (mg protamine per 100 IU heparin)</li>
+                    <li><strong>Formula:</strong> Protamine = (Current ACT - Baseline ACT) / (Post-Hep ACT - Baseline ACT) × (Heparin dose / 100)</li>
+                </ul>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Post Heparin ACT (s)</span>
-            <input type="number" id="post-hep-act" class="param-input" oninput="exp_prota()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Final ACT (s)</span>
-            <input type="number" id="final-act" class="param-input" oninput="exp_prota()">
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Protamine</span>
-                <span class="param-output-value" id="prota">N/A</span>
-           </div>
-        </div>
-        
-        <!--Scripts-->
-        <script>
-            function exp_prota () {
-                var base_act = +document.getElementById('base-act').value;
-                var hep_bolus = +document.getElementById('hep-bolus').value;
-                var post_hep_act = +document.getElementById('post-hep-act').value;
-                var final_act = +document.getElementById('final-act').value;
-                var expected_prota = (final_act-base_act)/(post_hep_act-base_act)*(hep_bolus/100);
-                document.getElementById('prota').innerHTML = expected_prota.toFixed(0)+' mg';
+    </main>
+
+    <script>
+        function calculateActReversal() {
+            const base_act = +document.getElementById('base-act').value;
+            const hep_bolus = +document.getElementById('hep-bolus').value;
+            const post_hep_act = +document.getElementById('post-hep-act').value;
+            const final_act = +document.getElementById('final-act').value;
+            
+            // Validate inputs
+            if (!base_act || !hep_bolus || !post_hep_act || !final_act) {
+                document.getElementById('prota').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            // Calculations
+            const expected_prota = (final_act - base_act) / (post_hep_act - base_act) * (hep_bolus / 100);
+            
+            // Update results with proper formatting
+            document.getElementById('prota').innerHTML = Math.max(0, expected_prota).toFixed(0) + '<br><small>mg</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

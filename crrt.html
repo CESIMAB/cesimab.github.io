@@ -1,106 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Renal Replacement Therapy Parameters</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Renal Replacement Therapy Parameters</h1>
-        
-        <!--Expected Qe-->
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="exp_qe()" autofocus>
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Dose (ml/kg*h)</span>
-            <input type="number" id="dose" class="param-input" oninput="exp_qe()" value="25">
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Expected Qe</span>
-                <span class="param-output-value" id="exp-qe">N/A</span>
-           </div>
-        </div>
-        
-        <!--Prescription-->
-        <div class="flex-container">
-            <span class="param-name">Qpost (ml/h)</span>
-            <input type="number" id="qpost" class="param-input" oninput="actual_qe(); filtration_fraction();" >
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Qpre (ml/h)</span>
-            <input type="number" id="qpre" class="param-input" oninput="actual_qe(); filtration_fraction();" value="0">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">NUF (ml/h)</span>
-            <input type="number" id="nuf" class="param-input" oninput="actual_qe(); filtration_fraction();" value="100">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Qd (ml/h)</span>
-            <input type="number" id="qd" class="param-input" oninput="actual_qe(); dialysis_fraction();" >
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Qb (ml/min)</span>
-            <input type="number" id="qb" class="param-input" oninput="dialysis_fraction(); filtration_fraction();" value="200">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Hct (%)</span>
-            <input type="number" id="hct" class="param-input" oninput="filtration_fraction()" value="30">
-        </div>
-        <div class="flex-container">
-            <div class="flex-container flex-output">
-                <span class="param-output-name">Actual Qe</span>
-                <span class="param-output-value" id="actual-qe">N/A</span>
-            </div>
-            <div class="flex-container flex-output">
-                <span class="param-output-name">Filtration Fraction</span>
-                <span class="param-output-value" id="ff">N/A</span>
-            </div>
-            <div class="flex-container flex-output">
-                <span class="param-output-name">Dialysis Fraction</span>
-                <span class="param-output-value" id="df">N/A</span>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRRT Parameters Calculator - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate continuous renal replacement therapy parameters including clearance and filtration fractions">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
             </div>
         </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>🩺 CRRT Parameters Calculator</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateExpectedQe()" step="0.1" min="0" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="dose" class="form-label">Target Dose (ml/kg·h)</label>
+                            <input type="number" id="dose" class="form-input" placeholder="CRRT dose" oninput="calculateExpectedQe()" value="25" step="1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="hct" class="form-label">Hematocrit (%)</label>
+                            <input type="number" id="hct" class="form-input" placeholder="Hematocrit" oninput="calculateFiltrationFraction()" value="30" step="1" min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">CRRT Prescription</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="qb" class="form-label">Blood Flow (ml/min)</label>
+                            <input type="number" id="qb" class="form-input" placeholder="Blood flow rate" oninput="calculateDialysisFraction(); calculateFiltrationFraction();" value="200" step="10" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="qd" class="form-label">Dialysate Flow (ml/h)</label>
+                            <input type="number" id="qd" class="form-input" placeholder="Dialysate flow" oninput="calculateActualQe(); calculateDialysisFraction();" step="100" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="qpre" class="form-label">Pre-filter Replacement (ml/h)</label>
+                            <input type="number" id="qpre" class="form-input" placeholder="Pre-filter fluid" oninput="calculateActualQe(); calculateFiltrationFraction();" value="0" step="100" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="qpost" class="form-label">Post-filter Replacement (ml/h)</label>
+                            <input type="number" id="qpost" class="form-input" placeholder="Post-filter fluid" oninput="calculateActualQe(); calculateFiltrationFraction();" step="100" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="nuf" class="form-label">Net Ultrafiltration (ml/h)</label>
+                            <input type="number" id="nuf" class="form-input" placeholder="Net fluid removal" oninput="calculateActualQe(); calculateFiltrationFraction();" value="100" step="50" min="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Calculated Results</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Expected Clearance</div>
+                        <div class="result-value" id="exp-qe">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Actual Clearance</div>
+                        <div class="result-value" id="actual-qe">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Filtration Fraction</div>
+                        <div class="result-value" id="ff">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Dialysis Fraction</div>
+                        <div class="result-value" id="df">N/A</div>
+                    </div>
+                    <div class="result-card accent">
+                        <div class="result-label">Dose Achieved</div>
+                        <div class="result-value" id="dose-achieved">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md); font-size: 1.125rem;">Clinical Notes</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg);">
+                    <li><strong>Filtration Fraction:</strong> Should be kept <20% to prevent filter clotting</li>
+                    <li><strong>Dialysis Fraction:</strong> Should be kept 10-30% for optimal efficiency</li>
+                    <li><strong>Blood Flow:</strong> Typically 150-250 ml/min, higher flows improve clearance</li>
+                    <li><strong>Replacement Fluid:</strong> Pre-filter dilutes blood, post-filter more efficient</li>
+                    <li><strong>Qe Formula:</strong> Qpre + Qpost + NUF + Qd</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function calculateExpectedQe() {
+            const w = +document.getElementById('weight').value;
+            const d = +document.getElementById('dose').value;
+            
+            if (!w || !d) {
+                document.getElementById('exp-qe').innerHTML = 'N/A';
+                document.getElementById('dose-achieved').innerHTML = 'N/A';
+                return;
+            }
+            
+            const expected_qe = w * d;
+            document.getElementById('exp-qe').innerHTML = expected_qe + '<br><small>ml/h</small>';
+            
+            // Update dose achieved
+            const actual_qe_val = +document.getElementById('actual-qe').textContent.replace(/[^\d.]/g, '') || 0;
+            if (actual_qe_val > 0) {
+                const dose_achieved = actual_qe_val / w;
+                document.getElementById('dose-achieved').innerHTML = dose_achieved.toFixed(1) + '<br><small>ml/kg·h</small>';
+            }
+        }
         
-        <!--Scripts-->
-        <script>
-            function exp_qe () {
-                var w = +document.getElementById('weight').value;
-                var d = +document.getElementById('dose').value;
-                var expected_qe = w * d;
-                document.getElementById('exp-qe').innerHTML = expected_qe+' ml/h';
+        function calculateActualQe() {
+            const qpre = +document.getElementById('qpre').value || 0;
+            const qpost = +document.getElementById('qpost').value || 0;
+            const nuf = +document.getElementById('nuf').value || 0;
+            const qd = +document.getElementById('qd').value || 0;
+            const weight = +document.getElementById('weight').value || 0;
+            
+            const actual_qe = qpre + qpost + nuf + qd;
+            document.getElementById('actual-qe').innerHTML = actual_qe + '<br><small>ml/h</small>';
+            
+            // Update dose achieved
+            if (weight > 0) {
+                const dose_achieved = actual_qe / weight;
+                document.getElementById('dose-achieved').innerHTML = dose_achieved.toFixed(1) + '<br><small>ml/kg·h</small>';
+            }
+        }
+        
+        function calculateFiltrationFraction() {
+            const qpre = +document.getElementById('qpre').value || 0;
+            const qpost = +document.getElementById('qpost').value || 0;
+            const nuf = +document.getElementById('nuf').value || 0;
+            const qb = +document.getElementById('qb').value || 0;
+            const hct = +document.getElementById('hct').value || 0;
+            
+            if (!qb) {
+                document.getElementById('ff').innerHTML = 'N/A';
+                return;
             }
             
-            function actual_qe () {
-                var qpre = +document.getElementById('qpre').value;
-                var qpost = +document.getElementById('qpost').value;
-                var nuf = +document.getElementById('nuf').value;
-                var qd = +document.getElementById('qd').value;
-                var actual_qe = qpre+qpost+nuf+qd;
-                document.getElementById('actual-qe').innerHTML = actual_qe+' ml/h';
+            const quf = qpre + qpost + nuf;
+            const plasma_flow = qb * (1 - (hct / 100)) + qpre / 60;
+            const ff = ((quf / 60) / plasma_flow) * 100;
+            
+            document.getElementById('ff').innerHTML = ff.toFixed(1) + '<br><small>%</small>';
+        }
+        
+        function calculateDialysisFraction() {
+            const qd = +document.getElementById('qd').value || 0;
+            const qb = +document.getElementById('qb').value || 0;
+            
+            if (!qb) {
+                document.getElementById('df').innerHTML = 'N/A';
+                return;
             }
             
-            function filtration_fraction () {
-                var qpre = +document.getElementById('qpre').value;
-                var qpost = +document.getElementById('qpost').value;
-                var nuf = +document.getElementById('nuf').value;
-                var qb = +document.getElementById('qb').value;
-                var hct = +document.getElementById('hct').value;
-                var quf = qpre+qpost+nuf;
-                var ff = ((quf/60)/(qb*(1-(hct/100))+qpre/60))*100;
-                document.getElementById('ff').innerHTML = ff.toFixed(2)+'%';
-            }
+            const df = ((qd / 60) / qb) * 100;
+            document.getElementById('df').innerHTML = df.toFixed(1) + '<br><small>%</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
             
-            function dialysis_fraction () {
-                var qd = +document.getElementById('qd').value;
-                var qb = +document.getElementById('qb').value;
-                var df = ((qd/60)/qb)*100;
-                document.getElementById('df').innerHTML = df.toFixed(2)+'%';
-            }
-        </script>
-    </body>
+            // Initialize calculations
+            calculateExpectedQe();
+            calculateActualQe();
+            calculateFiltrationFraction();
+            calculateDialysisFraction();
+        });
+    </script>
+</body>
 </html>

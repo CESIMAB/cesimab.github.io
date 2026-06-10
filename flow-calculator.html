@@ -1,103 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Flow Calculator</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Flow Calculator</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="flow()">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flow Calculator - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate infusion flow rates for medications with different concentrations and dosing units">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Concentration</span>
-            <input type="number" id="concentration" class="param-input" oninput="flow()">
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>⚡ Flow Calculator</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateFlow()" step="0.1" min="0" autofocus>
+                            <small style="color: var(--text-secondary); font-size: 0.75rem; margin-top: 0.25rem;">Set to 1 for weight-independent calculations</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Drug Concentration</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="concentration" class="form-label">Concentration</label>
+                            <input type="number" id="concentration" class="form-input" placeholder="Drug concentration" oninput="calculateFlow()" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="concentration-units" class="form-label">Concentration Units</label>
+                            <select id="concentration-units" class="form-input" oninput="calculateFlow()">
+                                <option value="mg">mg/ml</option>
+                                <option value="mcg">mcg/ml</option>
+                                <option value="ng">ng/ml</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2 class="section-title">Target Dose</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="dose" class="form-label">Dose</label>
+                            <input type="number" id="dose" class="form-input" placeholder="Target dose" oninput="calculateFlow()" step="0.1" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="dose-units" class="form-label">Dose Units</label>
+                            <select id="dose-units" class="form-input" oninput="calculateFlow()">
+                                <option value="mg-min">mg/kg·min</option>
+                                <option value="mcg-min">mcg/kg·min</option>
+                                <option value="ng-min">ng/kg·min</option>
+                                <option value="mg-h">mg/kg·h</option>
+                                <option value="mcg-h">mcg/kg·h</option>
+                                <option value="ng-h">ng/kg·h</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Calculated Results</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Infusion Rate</div>
+                        <div class="result-value" id="flow">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Daily Volume</div>
+                        <div class="result-value" id="daily-volume">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Hourly Dose</div>
+                        <div class="result-value" id="hourly-dose">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Daily Dose</div>
+                        <div class="result-value" id="daily-dose">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <h3 style="color: var(--text-primary); margin-bottom: var(--spacing-md); font-size: 1.125rem;">Clinical Notes</h3>
+                <ul style="color: var(--text-secondary); line-height: 1.6; padding-left: var(--spacing-lg);">
+                    <li><strong>Unit Conversions:</strong> mg = 1000 mcg = 1,000,000 ng</li>
+                    <li><strong>Time Conversions:</strong> 1 hour = 60 minutes</li>
+                    <li><strong>Weight Independence:</strong> Set weight to 1 kg for calculations independent of patient weight</li>
+                    <li><strong>Formula:</strong> Flow (ml/h) = (Dose × Time Factor × Weight) / (Concentration × Unit Factor)</li>
+                    <li><strong>Always verify:</strong> Double-check calculations and pump settings before administration</li>
+                </ul>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Concentration Units</span>
-            <select name="" id="concentration-units" class="param-input" oninput="flow()">
-                <option value="mg">mg/ml</option>
-                <option value="mcg">mcg/ml</option>
-                <option value="ng">ng/ml</option>
-            </select>
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Dose</span>
-            <input type="number" id="dose" class="param-input" oninput="flow()">
-        </div>
-        <div class="flex-container">
-            <span class="param-name">Dose Units</span>
-            <select name="" id="dose-units" class="param-input" oninput="flow()">
-                <option value="mg-min">mg/kg*min</option>
-                <option value="mcg-min">mcg/kg*min</option>
-                <option value="ng-min">ng/kg*min</option>
-                <option value="mg-h">mg/kg*h</option>
-                <option value="mcg-h">mcg/kg*h</option>
-                <option value="ng-h">ng/kg*h</option>
-            </select>
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Flow</span>
-                <span class="param-output-value" id="flow">N/A</span>
-           </div>
-        </div>
-        <div class="flex-container"><span>Set weight to 1 to calculate weight-independent values.</span></div>
-        
-        <!--Scripts-->
-        <script>
-            function flow () {
-                var mass_adjustment = 0;
-                var time_adjustment = 0;
-                var concentration_units = document.getElementById('concentration-units').value;
-                var dose_units = document.getElementById('dose-units').value;
-                switch (concentration_units) {
-                    case 'mg':
-                        if (dose_units == 'mg-min' || dose_units == 'mg-h') {
-                            mass_adjustment = 0;
-                        } else if (dose_units == 'mcg-min' || dose_units == 'mcg-h') {
-                            mass_adjustment = 3;
-                        } else if (dose_units == 'ng-min' || dose_units == 'ng-h') {
-                            mass_adjustment = 6;
-                        }
-                        break;
-                    case 'mcg':
-                        if (dose_units == 'mg-min' || dose_units == 'mg-h') {
-                            mass_adjustment = -3;
-                        } else if (dose_units == 'mcg-min' || dose_units == 'mcg-h') {
-                            mass_adjustment = 0;
-                        } else if (dose_units == 'ng-min' || dose_units == 'ng-h') {
-                            mass_adjustment = 3;
-                        }
-                        break;
-                    case 'ng':
-                        if (dose_units == 'mg-min' || dose_units == 'mg-h') {
-                            mass_adjustment = -6;
-                        } else if (dose_units == 'mcg-min' || dose_units == 'mcg-h') {
-                            mass_adjustment = -3;
-                        } else if (dose_units == 'ng-min' || dose_units == 'ng-h') {
-                            mass_adjustment = 0;
-                        }
-                        break;
-                    default:
-                        mass_adjustment = 0;
-                }
-                if (dose_units == 'mg-h' || dose_units == 'mcg-h' || dose_units == 'ng-h') {
-                    time_adjustment = 0; 
-                } else if (dose_units == 'mg-min' || dose_units == 'mcg-min' || dose_units == 'ng-min') {
-                    time_adjustment = 1;
-                }
-                var weight = document.getElementById('weight').value;
-                var dose = document.getElementById('dose').value;
-                var concentration = document.getElementById('concentration').value;
-                var flow_calc = (dose*Math.pow(60,time_adjustment)*weight)/(concentration*Math.pow(10, mass_adjustment));
-                document.getElementById('flow').innerHTML = flow_calc.toFixed(2)+' ml/h';
+    </main>
+
+    <script>
+        function calculateFlow() {
+            const weight = +document.getElementById('weight').value;
+            const dose = +document.getElementById('dose').value;
+            const concentration = +document.getElementById('concentration').value;
+            const concentration_units = document.getElementById('concentration-units').value;
+            const dose_units = document.getElementById('dose-units').value;
+            
+            // Validate inputs
+            if (!weight || !dose || !concentration) {
+                document.getElementById('flow').innerHTML = 'N/A';
+                document.getElementById('daily-volume').innerHTML = 'N/A';
+                document.getElementById('hourly-dose').innerHTML = 'N/A';
+                document.getElementById('daily-dose').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            // Calculate mass adjustment factor
+            let mass_adjustment = 0;
+            switch (concentration_units) {
+                case 'mg':
+                    if (dose_units.includes('mg')) mass_adjustment = 0;
+                    else if (dose_units.includes('mcg')) mass_adjustment = 3;
+                    else if (dose_units.includes('ng')) mass_adjustment = 6;
+                    break;
+                case 'mcg':
+                    if (dose_units.includes('mg')) mass_adjustment = -3;
+                    else if (dose_units.includes('mcg')) mass_adjustment = 0;
+                    else if (dose_units.includes('ng')) mass_adjustment = 3;
+                    break;
+                case 'ng':
+                    if (dose_units.includes('mg')) mass_adjustment = -6;
+                    else if (dose_units.includes('mcg')) mass_adjustment = -3;
+                    else if (dose_units.includes('ng')) mass_adjustment = 0;
+                    break;
+            }
+            
+            // Calculate time adjustment factor
+            const time_adjustment = dose_units.includes('min') ? 1 : 0;
+            
+            // Calculate flow rate
+            const flow_calc = (dose * Math.pow(60, time_adjustment) * weight) / (concentration * Math.pow(10, mass_adjustment));
+            const daily_volume = flow_calc * 24;
+            
+            // Calculate dose per hour and per day
+            const hourly_dose = dose * weight * (dose_units.includes('min') ? 60 : 1);
+            const daily_dose = hourly_dose * 24;
+            
+            // Get appropriate units for dose display
+            const dose_unit_base = dose_units.split('-')[0];
+            
+            // Update results with proper formatting
+            document.getElementById('flow').innerHTML = flow_calc.toFixed(2) + '<br><small>ml/h</small>';
+            document.getElementById('daily-volume').innerHTML = daily_volume.toFixed(0) + '<br><small>ml/day</small>';
+            document.getElementById('hourly-dose').innerHTML = hourly_dose.toFixed(2) + '<br><small>' + dose_unit_base + '/h</small>';
+            document.getElementById('daily-dose').innerHTML = daily_dose.toFixed(0) + '<br><small>' + dose_unit_base + '/day</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>

@@ -1,111 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-        <title>Local Anaesthetic Dosing</title>
-        
-        <link rel="stylesheet" type="text/css" href="css/main.css" />
-    </head>
-    <body>
-        <h1>Local Anaesthetic Dosing</h1>
-        
-        <div class="flex-container">
-            <span class="param-name">Weight (kg)</span>
-            <input type="number" id="weight" class="param-input" oninput="la_dose()">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Anesthetic Dosing - CESIMAB Toolbox</title>
+    <meta name="description" content="Calculate safe dosing for local anesthetics with maximum dose limits and dilution calculations">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">CESIMAB Toolbox</a>
+                <a href="index.html" class="back-btn">Back to Calculators</a>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Local Anaesthetic</span>
-            <select name="" id="anaesthetic" class="param-input" oninput="la_dose()">
-                <option value="ropi">Ropivacaine</option>
-                <option value="bupi">Bupivacaine</option>
-            </select>
+    </header>
+
+    <main class="main-content">
+        <div class="container calculator-container">
+            <h1>💉 Local Anesthetic Dosing</h1>
+            
+            <div class="calculator-form">
+                <div class="form-section">
+                    <h2 class="section-title">Patient & Drug Parameters</h2>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight" class="form-label">Weight (kg)</label>
+                            <input type="number" id="weight" class="form-input" placeholder="Patient weight" oninput="calculateLaDose()" step="0.1" min="0" autofocus>
+                        </div>
+                        <div class="form-group">
+                            <label for="anaesthetic" class="form-label">Local Anesthetic</label>
+                            <select id="anaesthetic" class="form-input" oninput="calculateLaDose()">
+                                <option value="ropi">Ropivacaine</option>
+                                <option value="bupi">Bupivacaine</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="concentration" class="form-label">Target Concentration</label>
+                            <select id="concentration" class="form-input" oninput="calculateLaDose()">
+                                <option value="0.125">0.125%</option>
+                                <option value="0.250">0.250%</option>
+                                <option value="0.5">0.5%</option>
+                                <option value="0.75">0.75%</option>
+                                <option value="1">1%</option>
+                                <option value="2">2%</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Dosing Results</h2>
+                <div class="results-grid">
+                    <div class="result-card accent">
+                        <div class="result-label">Maximum Safe Dose</div>
+                        <div class="result-value" id="max-dose">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Maximum Volume</div>
+                        <div class="result-value" id="max-ml">N/A</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="result-label">Dose per kg</div>
+                        <div class="result-value" id="dose-per-kg">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2 class="section-title">Dilution Calculator (20ml total)</h2>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="result-label">Stock Solution</div>
+                        <div class="result-value" id="la-part">N/A</div>
+                    </div>
+                    <div class="result-card secondary">
+                        <div class="result-label">Normal Saline</div>
+                        <div class="result-value" id="sal-part">N/A</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Clinical Information -->
+            <div style="background: var(--bg-primary); border-radius: var(--radius-xl); padding: var(--spacing-xl); box-shadow: var(--shadow-md); border: 1px solid var(--gray-200); margin-top: var(--spacing-xl);">
+                <div style="margin-top: var(--spacing-md); padding: var(--spacing-md); background: rgba(234, 88, 12, 0.1); border-radius: var(--radius-md); border-left: 4px solid var(--accent-orange);">
+                    <p style="color: var(--text-primary); font-weight: 500; margin: 0;"><strong>⚠️ Important:</strong> This calculator assumes standard stock concentrations (Ropivacaine 1%, Bupivacaine 0.5%). Always verify actual drug concentrations before use.</p>
+                </div>
+            </div>
         </div>
-        <div class="flex-container">
-            <span class="param-name">Concentration</span>
-            <select name="" id="concentration" class="param-input" oninput="la_dose()">
-                <option value="0.125">0.125%</option>
-                <option value="0.250">0.250%</option>
-                <option value="0.5">0.5%</option>
-                <option value="0.75">0.75%</option>
-                <option value="1">1%</option>
-            </select>
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Max bolus dose</span>
-                <span class="param-output-value" id="max-dose">N/A</span>
-           </div>
-        </div>
-        <div class="flex-container">
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Saline Part (20ml)</span>
-                <span class="param-output-value" id="sal-part">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">LA Part (20ml)</span>
-                <span class="param-output-value" id="la-part">N/A</span>
-           </div>
-           <div class="flex-container flex-output">
-                <span class="param-output-name">Max bolus dose</span>
-                <span class="param-output-value" id="max-ml">N/A</span>
-           </div>
-        </div>
-        <div class="flex-container"><span>For Ropivacaine 1% and Bupivacaine 0.5% vials.</span></div>
-        
-        <!--Scripts-->
-        <script>
-            function la_dose () {
-                var weight = +document.getElementById('weight').value;
-                var anaesthetic = document.getElementById('anaesthetic').value;
-                var max_dose_calc = 0;
-                var base_concentration = 0;
-                var la_concentration = document.getElementById('concentration').value;
-                var la_part = 0;
-                var sal_part = 0;
-                var target_concentration = 0;
-                switch (anaesthetic) {
-                    case 'ropi':
-                        base_concentration = 10;
-                        max_dose_calc = weight*3;
-                        break;
-                    case 'bupi':
-                        base_concentration = 5;
-                        max_dose_calc = weight*2;
-                        break;
-                }
-                switch (la_concentration) {
-                    case '0.125':
-                        target_concentration = 1.25;
-                        break;
-                    case '0.250':
-                        target_concentration = 2.5;
-                        break;
-                    case '0.5':
-                        target_concentration = 5;
-                        break;
-                    case '0.75':
-                        target_concentration = 7.5;
-                        break;
-                    case '1':
-                        target_concentration = 10;
-                        break;
-                }
-                la_part = (target_concentration/base_concentration)*20;
-                sal_part = 20-la_part;
-                var max_ml = max_dose_calc/target_concentration;
-                if (sal_part < 0) {
-                    document.getElementById('max-dose').innerHTML = 'nope.';
-                    document.getElementById('sal-part').innerHTML = 'nope.';
-                    document.getElementById('la-part').innerHTML = 'nope.';
-                    document.getElementById('max-ml').innerHTML = 'nope.';
-                } else {
-                    document.getElementById('max-dose').innerHTML = max_dose_calc.toFixed(0)+' mg';
-                    document.getElementById('sal-part').innerHTML = sal_part.toFixed(1)+' ml';
-                    document.getElementById('la-part').innerHTML = la_part.toFixed(1)+' ml';
-                    document.getElementById('max-ml').innerHTML = max_ml.toFixed(1)+' ml';
-                }
+    </main>
+
+    <script>
+        function calculateLaDose() {
+            const weight = +document.getElementById('weight').value;
+            const anaesthetic = document.getElementById('anaesthetic').value;
+            const la_concentration = +document.getElementById('concentration').value;
+            
+            if (!weight) {
+                document.getElementById('max-dose').innerHTML = 'N/A';
+                document.getElementById('max-ml').innerHTML = 'N/A';
+                document.getElementById('dose-per-kg').innerHTML = 'N/A';
+                document.getElementById('la-part').innerHTML = 'N/A';
+                document.getElementById('sal-part').innerHTML = 'N/A';
+                return;
             }
-        </script>
-    </body>
+            
+            // Define drug parameters
+            let max_dose_per_kg = 0;
+            let base_concentration = 0;
+            let drug_name = '';
+            
+            switch (anaesthetic) {
+                case 'ropi':
+                    base_concentration = 10; // 1% = 10mg/ml
+                    max_dose_per_kg = 3;
+                    drug_name = 'Ropivacaine';
+                    break;
+                case 'bupi':
+                    base_concentration = 5; // 0.5% = 5mg/ml
+                    max_dose_per_kg = 2;
+                    drug_name = 'Bupivacaine';
+                    break;
+            }
+            
+            // Calculate maximum safe dose
+            const max_dose_calc = weight * max_dose_per_kg;
+            const target_concentration = la_concentration * 10; // Convert % to mg/ml
+            const max_ml = max_dose_calc / target_concentration;
+            
+            // Calculate dilution for 20ml total volume
+            const la_part = (target_concentration / base_concentration) * 20;
+            const sal_part = 20 - la_part;
+            
+            // Update results
+            if (sal_part < 0) {
+                document.getElementById('max-dose').innerHTML = 'Invalid<br><small>concentration</small>';
+                document.getElementById('max-ml').innerHTML = 'Invalid<br><small>concentration</small>';
+                document.getElementById('la-part').innerHTML = 'Invalid<br><small>concentration</small>';
+                document.getElementById('sal-part').innerHTML = 'Invalid<br><small>concentration</small>';
+            } else {
+                document.getElementById('max-dose').innerHTML = max_dose_calc.toFixed(0) + '<br><small>mg</small>';
+                document.getElementById('max-ml').innerHTML = max_ml.toFixed(1) + '<br><small>ml</small>';
+                document.getElementById('la-part').innerHTML = la_part.toFixed(1) + '<br><small>ml ' + drug_name + '</small>';
+                document.getElementById('sal-part').innerHTML = sal_part.toFixed(1) + '<br><small>ml saline</small>';
+            }
+            
+            document.getElementById('dose-per-kg').innerHTML = max_dose_per_kg.toFixed(1) + '<br><small>mg/kg</small>';
+        }
+
+        // Add input validation and formatting
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            inputs.forEach(input => {
+                input.addEventListener('blur', function() {
+                    if (this.value && !isNaN(this.value)) {
+                        this.style.borderColor = 'var(--accent-emerald)';
+                    }
+                });
+                
+                input.addEventListener('focus', function() {
+                    this.style.borderColor = 'var(--primary-blue)';
+                });
+            });
+        });
+    </script>
+</body>
 </html>
